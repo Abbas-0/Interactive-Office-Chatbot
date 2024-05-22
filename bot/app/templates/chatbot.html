@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ece5dd;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+        .intro-container {
+            width: 40%; /* Set to 40% */
+            border: 1px solid #ddd;
+            border-radius: 0 10px 10px 0;
+            background: linear-gradient(135deg, #72edf2 10%, #5151e5 100%);
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 1s;
+        }
+        .intro-container h2 {
+            margin-top: 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .intro-container p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .intro-container ul {
+            padding-left: 20px;
+        }
+        .intro-container li {
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+        }
+        .intro-container li:before {
+            content: '✔️';
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        .chat-container {
+            width: 60%; /* Set to 60% */
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            margin: 20px;
+            overflow: hidden;
+        }
+        .chat-log {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+            background-color: #e5ddd5;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-log p {
+            margin: 5px 0;
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 75%;
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.4;
+            position: relative;
+        }
+        .chat-log .user {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
+        }
+        .chat-log .response {
+            background-color: #ffffff;
+            align-self: flex-start;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
+        }
+        .chat-log .timestamp {
+            font-size: 10px;
+            color: #999;
+            position: absolute;
+            bottom: -15px;
+            right: 10px;
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ddd;
+        }
+        .user-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        .user-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="intro-container">
+            <h2>Welcome!</h2>
+            <p>Welcome to our chat interface. Here you can:</p>
+            <ul>
+                <li>Request leaves</li>
+                <li>View leave requests</li>
+                <li>Set and view tasks</li>
+                <li>Complete tasks</li>
+            </ul>
+            <p>Use the commands below to interact with the chatbot:</p>
+            <ul>
+                <li><strong>view leaves</strong>: To see all leave requests</li>
+                <li><strong>request leave for DD/MM/YYYY with reason [reason]</strong>: To request a leave</li>
+                <li><strong>view tasks</strong>: To see all tasks</li>
+                <li><strong>[task name] deadline DD/MM/YYYY</strong>: To set a task deadline</li>
+                <li><strong>completed task [task name] on date DD/MM/YYYY</strong>: To mark a task as completed</li>
+            </ul>
+        </div>
+        <div class="chat-container">
+            <div class="chat-log" id="chat-log">
+                {% for entry in chat_log %}
+                    {% if entry.user %}
+                        <p class="user">{{ entry.user }}<span class="timestamp">{{ entry.timestamp }}</span></p>
+                    {% else %}
+                        <p class="response">{{ entry.response }}<span class="timestamp">{{ entry.timestamp }}</span></p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <form id="chat-form" method="post" action="" class="chat-input">
+                {% csrf_token %}
+                <input type="text" class="user-input" name="user_input" id="user-input" placeholder="Enter your command">
+                <input type="submit" value="Submit" class="submit-btn">
+            </form>
+        </div>
+    </div>
+    <script>
+        // Automatically scroll to the bottom of the chat log
+        function scrollToBottom() {
+            var chatLog = document.getElementById('chat-log');
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        // Scroll to bottom on page load
+        window.onload = scrollToBottom;
+
+        // Scroll to bottom on form submit
+        document.getElementById('chat-form').onsubmit = function() {
+            setTimeout(scrollToBottom, 100); // Ensure scroll happens after new message is rendered
+        }
+    </script>
+</body>
+</html>
