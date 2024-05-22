@@ -32,7 +32,7 @@ make sure its activated before running
 `py manage.py runserver`
 Click at the link after that which will guide to the localhost 
 
-(.run command.png)
+![run command](https://github.com/Abbas-0/Interactive-Office-Chatbot/assets/47185177/9a851a67-5724-41e0-b390-79839b72f3f0)
 
 
 
