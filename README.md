@@ -32,7 +32,7 @@ make sure its activated before running
 `py manage.py runserver`
 Click at the link after that which will guide to the localhost 
 
-  <img src="https://imgur.com/a/QW8zO4X" />
+  <img src="[https://imgur.com/a/QW8zO4X](https://imgur.com/AGo5mjd)" />
 
 
 
